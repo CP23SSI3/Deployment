@@ -1,0 +1,42 @@
+version: "3.9"
+services:
+  db:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=cp23ssi3
+      - MYSQL_DATABASE=internhub
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=cp23ssi3
+    volumes:
+      - ./mysql:/var/lib/mysql
+      - ./docker/db/my.cnf:/etc/mysql/my.cnf
+      - ./docker/db/sql:/docker-entrypoint-initdb.d
+    ports:
+      - 3306:3306
+
+  backend:
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+    volumes:
+      - .:/var/www/html
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=cp23ssi3.sit.kmutt.ac.th
+      - DB_DATABASE=internhub
+      - DB_USERNAME=sysadmin
+      - DB_PASSWORD=cp23ssi3
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./docker/frontend/Dockerfile
+    volumes:
+      - .:/var/www/html
+    ports:
+      - 3000:3000
+    depends_on:
+      - backend
