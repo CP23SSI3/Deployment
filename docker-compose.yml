@@ -1,42 +1,53 @@
-version: "3.9"
+version: '3'
+
 services:
   db:
+    container_name: mysqldb
+    # build: ../DB/
     image: mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=cp23ssi3
-      - MYSQL_DATABASE=internhub
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=cp23ssi3
+      MYSQL_ROOT_PASSWORD: cp23ssi3
+      MYSQL_DATABASE: internhub
+      MYSQL_USER: root
+      MYSQL_PASSWORD: cp23ssi3
+    ports: 
+      - "5173:3306"
     volumes:
-      - ./mysql:/var/lib/mysql
-      - ./docker/db/my.cnf:/etc/mysql/my.cnf
-      - ./docker/db/sql:/docker-entrypoint-initdb.d
-    ports:
-      - 3306:3306
+      - ../DB:/docker-entrypoint-initdb.d
+      - ../DB/data:/var/lib/mysql
+      - ../DB/my.cnf:/etc/mysql/my.cnf
+    restart: on-failure
 
   backend:
-    build:
-      context: .
-      dockerfile: ./docker/backend/Dockerfile
-    volumes:
-      - .:/var/www/html
-    ports:
-      - 8000:8000
+    container_name: backend
     depends_on:
       - db
+    build: ../Backend/
     environment:
-      - DB_HOST=cp23ssi3.sit.kmutt.ac.th
-      - DB_DATABASE=internhub
-      - DB_USERNAME=sysadmin
-      - DB_PASSWORD=cp23ssi3
-
+      - DB_HOST=db
+      - DB_USER=dev
+      - DB_PASSWORD=0000
+      - DB_NAME=internhub
+      - DB_PORT=3306
+    restart: on-failure
   frontend:
-    build:
-      context: .
-      dockerfile: ./docker/frontend/Dockerfile
-    volumes:
-      - .:/var/www/html
-    ports:
-      - 3000:3000
+    container_name: frontend
     depends_on:
       - backend
+      - db
+    image: node:latest
+    build: ../Frontend
+    restart: on-failure
+  reverse-proxy:
+    container_name: reverse-proxy
+    depends_on:
+      - frontend
+    ports:
+      - 8080:8080
+      - "80:80"
+    image: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf 
+    restart: on-failure
+  
+
