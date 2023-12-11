@@ -9,8 +9,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: cp23ssi3
       MYSQL_DATABASE: internhub
-      MYSQL_USER: root
-      MYSQL_HOST: cp23ssi3.sit.kmutt.ac.th
+      # MYSQL_USER: root
+      # MYSQL_HOST: cp23ssi3a.sit.kmutt.ac.th
     ports:
       - 3306:3306
     volumes:
@@ -32,7 +32,7 @@ services:
     volumes:
       - .m2:/root/.m2
     environment:
-      - spring.datasource.url=jdbc:mysql://10.4.85.39:3306/internhub
+      - spring.datasource.url=jdbc:mysql://10.4.85.53:3306/internhub
 
   frontend:
     container_name: frontend
