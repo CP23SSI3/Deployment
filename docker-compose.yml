@@ -1,20 +1,6 @@
 version: '3.3'
 
 services:
-  proxy:
-    container_name: proxy
-    image: nginx:stable-alpine
-    restart: on-failure
-    depends_on:
-      - frontend
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - "./nginx/config/conf.d/default.conf:/etc/nginx/conf.d/default.conf:rw"
-      - "./nginx/ssl:/etc/ssl/:rw"
-      # - "~/ssl/cp23ssi3a.crt:/ssl/cp23ssi3a.crt"
-      # - "~/ssl/privatekey.key:/ssl/privatekey.key"
 
   mysqldb:
     container_name: mysqldb
@@ -25,7 +11,7 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - "./DB:/docker-entrypoint-initdb.d"
+      - "../DB:/docker-entrypoint-initdb.d"
       - "../DB/data:/var/lib/mysql"
     restart: on-failure
 
@@ -49,9 +35,27 @@ services:
       # - mysqldb
     # ports:           #ถ้าใส่ reverse-proxy จะไม่ต้องใส่ port
     #   - 80:3000
-    image: node:latest
+    # image: node:latest
     build: ../Frontend
     restart: on-failure
+
+  proxy:
+    container_name: proxy
+    image: nginx:stable-alpine
+    restart: on-failure
+    depends_on:
+      - frontend
+    ports:
+      - 80:3000
+      - 443:443
+      - 8080:8080
+    volumes:
+      - "./nginx/config/conf.d/default.conf:/etc/nginx/conf.d/default.conf:rw"
+      - "../ssl/:/etc/ssl/:rw"
+      # - "./nginx/config/nginx.conf:/etc/nginx/conf.d/default.conf:ro"
+      # - "~/ssl/cp23ssi3a.crt:/ssl/cp23ssi3a.crt"
+      # - "~/ssl/privatekey.key:/ssl/privatekey.key"
+
 
   # reverse-proxy:
   #   container_name: reverse-proxy
