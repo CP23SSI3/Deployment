@@ -3,7 +3,7 @@ name: GitHub Action
 on:
   push:
     branches:
-      - main
+      - infra
 
 jobs:
   deploy:
@@ -29,4 +29,3 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: mkdir "$(date +"%d-%m-%Y %H:%M:%S")"
-
