@@ -25,8 +25,8 @@ jobs:
       - name: Use SSH
         uses: appleboy/ssh-action@v1.0.0
         with: 
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
+          host: cp23ssi3.sit.kmutt.ac.th
+          username: sysadmin
+          password: cp23ssi3
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: mkdir "$(date +"%d-%m-%Y %H:%M:%S")"
