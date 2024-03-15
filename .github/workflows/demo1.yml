@@ -30,3 +30,7 @@ jobs:
           password: cp23ssi3
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: mkdir "$(date +"%d-%m-%Y %H:%M:%S")"
+        run: |
+          cd ~/Deployment
+          docker-compose pull
+          docker-compose up -d
