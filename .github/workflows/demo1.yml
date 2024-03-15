@@ -32,6 +32,6 @@ jobs:
           script: mkdir "$(date +"%d-%m-%Y %H:%M:%S")"
       - name: run deploy
         run: |
-          cd ~/Deployment
+          cd Deployment
           docker-compose pull
           docker-compose up -d
