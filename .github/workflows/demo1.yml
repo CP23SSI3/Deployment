@@ -32,6 +32,15 @@ jobs:
           script: mkdir "$(date +"%d-%m-%Y %H:%M:%S")"
       - name: run deploy
         run: |
+          docker login ghcr.io -u twn051 -p jack2544.
+
+          if [[ -f "Deployment" ]]
+            then
+              echo "Deployment exists."
+            else
+              yes | git clone git@github.com:CP23SSI3/Deployment.git
+            fi  
+
           cd ~/Deployment
           docker-compose pull
           docker-compose up -d
