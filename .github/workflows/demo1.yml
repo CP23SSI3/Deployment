@@ -32,7 +32,7 @@ jobs:
           script: mkdir "$(date +"%d-%m-%Y %H:%M:%S")"
       - name: run deploy
         run: |
-          docker login ghcr.io -u twn051 -p jack2544.
+          docker login ghcr.io -u twn051 -p $GHCR_PAT
 
           if [[ -f "Deployment" ]]
             then
