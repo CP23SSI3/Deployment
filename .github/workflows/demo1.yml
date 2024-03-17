@@ -12,16 +12,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        
       - name: Install OpenVPN
         run: |
           sudo apt update
           sudo apt install -y openvpn openvpn-systemd-resolved
+          
       - name: Connect to VPN
         uses: "kota65535/github-openvpn-connect-action@v2"
         with:
           config_file: .github/workflows/sitst-client.ovpn
           username: 63130500051
           password: jack2544.
+          
       - name: Use SSH
         uses: appleboy/ssh-action@v1.0.0
         with: 
@@ -30,17 +33,25 @@ jobs:
           password: cp23ssi3
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: mkdir "$(date +"%d-%m-%Y %H:%M:%S")"
-      - name: run deploy
-        run: |
-          docker login ghcr.io -u $JACK_GH_USER -p $GHCR_PAT
 
-          if [[ -f "Deployment" ]]
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.DOCKER_ACC }}
+          password: ${{ secrets.GH_PAT }}
+          
+      - name: Pull code frow Github
+        run: |
+           if [[ -f "Deployment" ]]
             then
               echo "Deployment exists."
             else
               yes | git clone git@github.com:CP23SSI3/Deployment.git
-            fi  
+            fi          
 
-          cd ~/Deployment
-          docker-compose pull
-          docker-compose up -d
+            cd ~/Deployment
+
+            git pull
+            docker-compose pull
+            docker-compose up -d
